@@ -1,0 +1,406 @@
+%% Revention Database ERD
+%% Generated: 2025-12-08
+%% Database: REVENTION (324 tables, 59 foreign keys)
+%% Note: Only tables with FK relationships shown for clarity
+
+erDiagram
+    %% ===== CORE ENTITIES =====
+
+    Computer {
+        int ComputerKey PK
+        nvarchar Name
+        int BusinessKey
+        datetime LastSync
+    }
+
+    Employee {
+        int EmployeeKey PK
+        nvarchar FirstName
+        nvarchar LastName
+        nvarchar PIN
+        bit Active
+    }
+
+    %% ===== EMPLOYEE RELATIONSHIPS =====
+
+    EmployeeLaborRate {
+        int EmployeeLaborRateKey PK
+        int EmployeeKey FK
+        int LaborTypeKey
+        decimal Rate
+    }
+
+    EmployeeLaborType {
+        int EmployeeLaborTypeKey PK
+        int EmployeeKey FK
+        int LaborTypeKey
+        bit IsPrimary
+    }
+
+    Employee ||--o{ EmployeeLaborRate : "has rates"
+    Employee ||--o{ EmployeeLaborType : "has labor types"
+
+    %% ===== MENU SYSTEM (Highly Normalized) =====
+
+    Menus {
+        nvarchar MenuName PK
+        nvarchar Description
+        bit Active
+        int DisplaySeq
+    }
+
+    MenuGrps {
+        nvarchar GroupName PK
+        nvarchar Description
+        int DisplaySeq
+    }
+
+    MenuItms {
+        nvarchar ItemName PK
+        nvarchar Description
+        int DisplaySeq
+    }
+
+    MenuMds {
+        nvarchar ModName PK
+        nvarchar Description
+        int DisplaySeq
+    }
+
+    MenuSzs {
+        nvarchar SizeName PK
+        nvarchar Description
+        int DisplaySeq
+    }
+
+    MenuStys {
+        nvarchar StyleName PK
+        nvarchar Description
+        int DisplaySeq
+    }
+
+    MenuPrfs {
+        nvarchar PrefName PK
+        nvarchar Description
+    }
+
+    MenuPrfMbrs {
+        nvarchar PrefMemberName PK
+        nvarchar PrefName
+        nvarchar Description
+    }
+
+    %% Menu Cross-Reference Tables
+
+    MenuGrpXRef {
+        int MenuGrpXRefKey PK
+        nvarchar MenuName FK
+        nvarchar GroupName FK
+        int DisplaySeq
+    }
+
+    MenuGrpMdXRef {
+        int MenuGrpMdXRefKey PK
+        nvarchar MenuName FK
+        nvarchar GroupName FK
+        nvarchar ModName FK
+    }
+
+    MenuGrpMdSzXRef {
+        int MenuGrpMdSzXRefKey PK
+        nvarchar MenuName FK
+        nvarchar GroupName FK
+        nvarchar ModName FK
+        nvarchar SizeName FK
+    }
+
+    MenuGrpPrfXRef {
+        int MenuGrpPrfXRefKey PK
+        nvarchar MenuName FK
+        nvarchar GroupName FK
+        nvarchar PrefName FK
+        nvarchar DefaultMember FK
+    }
+
+    MenuGrpStySzXRef {
+        int MenuGrpStySzXRefKey PK
+        nvarchar MenuName FK
+        nvarchar GroupName FK
+        nvarchar StyleName FK
+        nvarchar SizeName FK
+    }
+
+    MenuItmMdXRef {
+        int MenuItmMdXRefKey PK
+        nvarchar MenuName FK
+        nvarchar GroupName FK
+        nvarchar ItemName FK
+        nvarchar ModName FK
+    }
+
+    MenuItmMdSzXRef {
+        int MenuItmMdSzXRefKey PK
+        nvarchar MenuName FK
+        nvarchar GroupName FK
+        nvarchar ItemName FK
+        nvarchar ModName FK
+        nvarchar SizeName FK
+    }
+
+    MenuItmPrfXRef {
+        int MenuItmPrfXRefKey PK
+        nvarchar MenuName FK
+        nvarchar GroupName FK
+        nvarchar ItemName FK
+        nvarchar PrefName FK
+        nvarchar DefaultMember FK
+    }
+
+    MenuItmStySzXRef {
+        int MenuItmStySzXRefKey PK
+        nvarchar MenuName FK
+        nvarchar GroupName FK
+        nvarchar ItemName FK
+        nvarchar StyleName FK
+        nvarchar SizeName FK
+    }
+
+    MenuPrfMbrXRef {
+        int MenuPrfMbrXRefKey PK
+        nvarchar PrefMemberName FK
+        nvarchar PrefName FK
+    }
+
+    %% Menu Relationships
+    Menus ||--o{ MenuGrpXRef : "contains"
+    Menus ||--o{ MenuGrpMdXRef : "has modifiers"
+    Menus ||--o{ MenuGrpMdSzXRef : "has mod sizes"
+    Menus ||--o{ MenuGrpPrfXRef : "has preferences"
+    Menus ||--o{ MenuGrpStySzXRef : "has style sizes"
+    Menus ||--o{ MenuItmMdXRef : "item modifiers"
+    Menus ||--o{ MenuItmMdSzXRef : "item mod sizes"
+    Menus ||--o{ MenuItmPrfXRef : "item preferences"
+    Menus ||--o{ MenuItmStySzXRef : "item style sizes"
+
+    MenuGrps ||--o{ MenuGrpXRef : "in menus"
+    MenuGrps ||--o{ MenuGrpMdXRef : "has modifiers"
+    MenuGrps ||--o{ MenuGrpMdSzXRef : "has sizes"
+    MenuGrps ||--o{ MenuGrpPrfXRef : "has prefs"
+    MenuGrps ||--o{ MenuGrpStySzXRef : "has styles"
+    MenuGrps ||--o{ MenuItmMdXRef : "item mods"
+    MenuGrps ||--o{ MenuItmMdSzXRef : "item sizes"
+    MenuGrps ||--o{ MenuItmPrfXRef : "item prefs"
+    MenuGrps ||--o{ MenuItmStySzXRef : "item styles"
+
+    MenuItms ||--o{ MenuItmMdSzXRef : "has mod sizes"
+    MenuItms ||--o{ MenuItmMdXRef : "has modifiers"
+    MenuItms ||--o{ MenuItmPrfXRef : "has preferences"
+    MenuItms ||--o{ MenuItmStySzXRef : "has style sizes"
+
+    MenuMds ||--o{ MenuGrpMdXRef : "in groups"
+    MenuMds ||--o{ MenuGrpMdSzXRef : "with sizes"
+    MenuMds ||--o{ MenuItmMdXRef : "on items"
+    MenuMds ||--o{ MenuItmMdSzXRef : "item sizes"
+
+    MenuSzs ||--o{ MenuGrpMdSzXRef : "mod sizes"
+    MenuSzs ||--o{ MenuGrpStySzXRef : "style sizes"
+    MenuSzs ||--o{ MenuItmMdSzXRef : "item sizes"
+    MenuSzs ||--o{ MenuItmStySzXRef : "item style sizes"
+
+    MenuStys ||--o{ MenuGrpStySzXRef : "in groups"
+    MenuStys ||--o{ MenuItmStySzXRef : "on items"
+
+    MenuPrfs ||--o{ MenuGrpPrfXRef : "in groups"
+    MenuPrfs ||--o{ MenuItmPrfXRef : "on items"
+    MenuPrfs ||--o{ MenuPrfMbrXRef : "has members"
+
+    MenuPrfMbrs ||--o{ MenuGrpPrfXRef : "default member"
+    MenuPrfMbrs ||--o{ MenuItmPrfXRef : "default member"
+    MenuPrfMbrs ||--o{ MenuPrfMbrXRef : "member of"
+
+    %% ===== SECURITY SYSTEM =====
+
+    SecGrp {
+        int SecGroupKey PK
+        nvarchar GroupName
+        nvarchar Description
+        bit Active
+    }
+
+    SecGrpRights {
+        int SecGrpRightsKey PK
+        int SecGroupKey FK
+        nvarchar RightName
+        bit Allowed
+    }
+
+    SecGrp ||--o{ SecGrpRights : "has rights"
+
+    %% ===== REMOTE UPDATE SYSTEM =====
+
+    RU_JobCategories {
+        int CategoryID PK
+        nvarchar CategoryName
+    }
+
+    RU_Jobs {
+        int JobID PK
+        int CategoryID FK
+        nvarchar JobName
+        bit Enabled
+    }
+
+    RU_Files {
+        int FileID PK
+        int UpdateTypeID FK
+        nvarchar FileName
+        varbinary FileData
+    }
+
+    RU_UpdateTypes {
+        int UpdateTypeID PK
+        nvarchar TypeName
+    }
+
+    RU_Schedules {
+        int ScheduleID PK
+        nvarchar ScheduleName
+        datetime NextRun
+    }
+
+    RU_FileJobs {
+        int FileJobID PK
+        int FileID FK
+        int JobID FK
+    }
+
+    RU_JobParameters {
+        int ParameterID PK
+        int JobID FK
+        nvarchar ParamName
+        nvarchar ParamValue
+    }
+
+    RU_JobSchedules {
+        int JobScheduleID PK
+        int JobID FK
+        int ScheduleID FK
+    }
+
+    RU_JobHistory {
+        int HistoryID PK
+        int JobID FK
+        int ScheduleID FK
+        datetime ExecutionTime
+        nvarchar Status
+    }
+
+    RU_FileAccessLog {
+        int LogID PK
+        int FileID FK
+        datetime AccessTime
+    }
+
+    %% Remote Update Relationships
+    RU_JobCategories ||--o{ RU_Jobs : "categorizes"
+    RU_Jobs ||--o{ RU_FileJobs : "uses files"
+    RU_Jobs ||--o{ RU_JobParameters : "has params"
+    RU_Jobs ||--o{ RU_JobSchedules : "has schedules"
+    RU_Jobs ||--o{ RU_JobHistory : "has history"
+
+    RU_UpdateTypes ||--o{ RU_Files : "type of"
+    RU_Files ||--o{ RU_FileJobs : "used by"
+    RU_Files ||--o{ RU_FileAccessLog : "access log"
+
+    RU_Schedules ||--o{ RU_JobSchedules : "schedules jobs"
+    RU_Schedules ||--o{ RU_JobHistory : "history"
+
+    %% ===== OTHER RELATIONSHIPS =====
+
+    APIUsers {
+        int APIUsersKey PK
+        int ComputerKey FK
+        nvarchar UserName
+        nvarchar APIKey
+    }
+
+    Computer ||--o{ APIUsers : "has API users"
+
+    BusinessHours {
+        int BusinessHoursKey PK
+        int DayOfWeek
+        time OpenTime
+        time CloseTime
+    }
+
+    BusinessServiceHours {
+        int BusinessServiceHoursKey PK
+        int BusinessHoursKey FK
+        nvarchar ServiceType
+    }
+
+    BusinessHours ||--o{ BusinessServiceHours : "service hours"
+
+    Surcharges {
+        int SCKey PK
+        nvarchar Name
+        decimal Amount
+        bit Active
+    }
+
+    SurchargeOrderType {
+        int SurchargeOrderTypeKey PK
+        int SCKey FK
+        int OrdTypeKey
+    }
+
+    SurchargePaymentType {
+        int SurchargePaymentTypeKey PK
+        int SCKey FK
+        int PaymentTypeKey
+    }
+
+    Surcharges ||--o{ SurchargeOrderType : "applies to"
+    Surcharges ||--o{ SurchargePaymentType : "applies to"
+
+    Zones {
+        int ZoneKey PK
+        nvarchar ZoneName
+        nvarchar Description
+    }
+
+    ZoneGeocodes {
+        int ZoneGeocodesKey PK
+        int ZoneKey FK
+        decimal Latitude
+        decimal Longitude
+    }
+
+    Zones ||--o{ ZoneGeocodes : "has geocodes"
+
+    EventQuestions {
+        int EventQuestionsKey PK
+        nvarchar Question
+        nvarchar QuestionType
+    }
+
+    EventQuestionValues {
+        int EventQuestionValuesKey PK
+        int EventQuestionsKey FK
+        nvarchar Value
+    }
+
+    TimeclockEventQuestions {
+        int TimeclockEventQuestionsKey PK
+        int EventQuestionsKey FK
+    }
+
+    TimeclockEventResponse {
+        int TimeclockEventResponseKey PK
+        int EventQuestionsKey FK
+        nvarchar Response
+    }
+
+    EventQuestions ||--o{ EventQuestionValues : "has values"
+    EventQuestions ||--o{ TimeclockEventQuestions : "used in timeclock"
+    EventQuestions ||--o{ TimeclockEventResponse : "responses"

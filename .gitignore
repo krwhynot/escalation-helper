@@ -1,0 +1,26 @@
+# ================================================
+# Escalation Helper - Git Ignore
+# ================================================
+
+# Environment files (contains API keys!)
+.env
+
+# Python virtual environment
+venv/
+__pycache__/
+*.pyc
+
+# ChromaDB database files
+chroma_db/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+feedback_log.jsonl
