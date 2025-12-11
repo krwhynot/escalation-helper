@@ -1,0 +1,92 @@
+[
+  {
+    "id": "printer_001",
+    "category": "printer",
+    "query": "Kitchen printer not printing orders",
+    "expected_keywords": ["printer", "kitchen", "device", "station", "route"],
+    "expected_tables": ["Devices", "Stations", "OrderRouting"],
+    "relevance_threshold": 0.7,
+    "description": "Common printer connectivity and routing issue"
+  },
+  {
+    "id": "payment_001",
+    "category": "payment",
+    "query": "Credit card transactions showing as declined but money was charged",
+    "expected_keywords": ["payment", "credit", "transaction", "tender", "declined"],
+    "expected_tables": ["Payments", "Tenders", "Transactions"],
+    "relevance_threshold": 0.7,
+    "description": "Payment processing discrepancy between POS and processor"
+  },
+  {
+    "id": "employee_001",
+    "category": "employee",
+    "query": "Employee can't clock in with their PIN",
+    "expected_keywords": ["employee", "clock", "timeclock", "pin", "login"],
+    "expected_tables": ["Employees", "TimeClock", "Users"],
+    "relevance_threshold": 0.7,
+    "description": "Employee authentication and time tracking issue"
+  },
+  {
+    "id": "order_001",
+    "category": "order",
+    "query": "Cashier unable to void an order that was sent to kitchen",
+    "expected_keywords": ["void", "order", "permission", "status", "cancel"],
+    "expected_tables": ["Orders", "OrderItems", "Permissions"],
+    "relevance_threshold": 0.7,
+    "description": "Order modification permission and status workflow"
+  },
+  {
+    "id": "menu_001",
+    "category": "menu",
+    "query": "Menu item showing wrong price at checkout",
+    "expected_keywords": ["menu", "price", "item", "product", "pricing"],
+    "expected_tables": ["MenuItems", "Products", "Pricing"],
+    "relevance_threshold": 0.7,
+    "description": "Menu pricing configuration mismatch"
+  },
+  {
+    "id": "cash_001",
+    "category": "cash",
+    "query": "Cash drawer won't open when completing a sale",
+    "expected_keywords": ["cash", "drawer", "device", "tender", "payment"],
+    "expected_tables": ["Devices", "Tenders", "CashManagement"],
+    "relevance_threshold": 0.7,
+    "description": "Cash drawer hardware integration issue"
+  },
+  {
+    "id": "order_002",
+    "category": "order",
+    "query": "Orders disappearing from the screen after being placed",
+    "expected_keywords": ["order", "status", "queue", "display", "routing"],
+    "expected_tables": ["Orders", "OrderStatus", "OrderRouting"],
+    "relevance_threshold": 0.7,
+    "description": "Order visibility and status tracking"
+  },
+  {
+    "id": "employee_002",
+    "category": "employee",
+    "query": "Manager can't access reports button in back office",
+    "expected_keywords": ["permission", "role", "access", "reports", "employee"],
+    "expected_tables": ["Employees", "Roles", "Permissions"],
+    "relevance_threshold": 0.7,
+    "description": "Role-based access control for reporting features"
+  },
+  {
+    "id": "payment_002",
+    "category": "payment",
+    "query": "Tips not showing up on server's end of day report",
+    "expected_keywords": ["tips", "gratuity", "payment", "report", "employee"],
+    "expected_tables": ["Payments", "Tips", "EmployeePayments"],
+    "relevance_threshold": 0.7,
+    "description": "Tip tracking and reporting accuracy"
+  },
+  {
+    "id": "printer_002",
+    "category": "printer",
+    "query": "Receipt printer cutting off the bottom of receipts",
+    "expected_keywords": ["printer", "receipt", "device", "template", "format"],
+    "expected_tables": ["Devices", "ReceiptTemplates", "PrinterSettings"],
+    "relevance_threshold": 0.7,
+    "description": "Receipt formatting and printer configuration"
+  }
+]
