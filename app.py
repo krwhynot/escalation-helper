@@ -51,156 +51,6 @@ COLORS = {
     "coral_light": "#FFBCBE",
 }
 
-# ================================================
-# Follow-up Question Configuration
-# ================================================
-
-FOLLOWUP_THRESHOLD = 0.30  # Distance > this triggers follow-up (70% similarity)
-MAX_FOLLOWUPS = 4  # Maximum follow-up questions before showing results
-
-CATEGORY_KEYWORDS = {
-    "printer": ["print", "printer", "receipt", "kitchen print", "ticket", "label", "paper"],
-    "payment": ["payment", "card", "credit", "debit", "charge", "batch", "tip", "refund", "terminal"],
-    "employee": ["employee", "clock", "pin", "schedule", "staff", "server", "cashier", "manager", "driver"],
-    "order": ["order", "void", "comp", "total", "tax", "check", "ticket", "close", "reopen"],
-    "menu": ["menu", "item", "price", "modifier", "topping", "size", "coupon", "product", "category"],
-    "cash": ["cash", "drawer", "drop", "safe", "over", "short", "reconcile", "till", "deposit"]
-}
-
-FOLLOWUP_QUESTIONS = {
-    "printer": {
-        "question": "What's happening with the printer?",
-        "options": [
-            "Not printing at all",
-            "Printing to wrong printer/station",
-            "Double printing",
-            "Partial or garbled output",
-            "Slow or delayed"
-        ],
-        "hint": "Including the printer name (like 'Printer1' or 'kitchen printer') helps narrow it down.",
-        "query_enrichment": {
-            "Not printing at all": "printer not printing no output offline",
-            "Printing to wrong printer/station": "printer routing wrong station destination",
-            "Double printing": "printer duplicate double print twice",
-            "Partial or garbled output": "printer partial garbled cut off corrupt",
-            "Slow or delayed": "printer slow delay queue backed up"
-        }
-    },
-    "payment": {
-        "question": "What's the payment issue?",
-        "options": [
-            "Card declined but customer charged",
-            "Card charged twice",
-            "Payment not recording on order",
-            "Batch won't settle",
-            "Wrong amount charged"
-        ],
-        "hint": "If you have the last 4 digits of the card or an order number, include those.",
-        "query_enrichment": {
-            "Card declined but customer charged": "credit card declined charged anyway ghost",
-            "Card charged twice": "double charge duplicate payment transaction",
-            "Payment not recording on order": "payment missing order unpaid not applied",
-            "Batch won't settle": "credit card batch settle close end day",
-            "Wrong amount charged": "payment amount wrong incorrect total tip"
-        }
-    },
-    "employee": {
-        "question": "What's happening with the employee?",
-        "options": [
-            "Can't clock in (says already clocked in)",
-            "PIN not working",
-            "Missing from POS/schedule",
-            "Hours showing wrong",
-            "Can't perform an action (void, comp, etc.)"
-        ],
-        "hint": "Knowing the employee's role (cashier, manager, driver) helps since permissions vary.",
-        "query_enrichment": {
-            "Can't clock in (says already clocked in)": "employee clock in already stuck timeclock",
-            "PIN not working": "employee PIN login password access denied",
-            "Missing from POS/schedule": "employee not showing missing POS schedule",
-            "Hours showing wrong": "time clock hours incorrect wrong punch",
-            "Can't perform an action (void, comp, etc.)": "employee permission denied can't void comp security"
-        }
-    },
-    "order": {
-        "question": "What's wrong with the order?",
-        "options": [
-            "Order won't close/complete",
-            "Can't void or comp items",
-            "Wrong total or tax",
-            "Missing items",
-            "Order stuck or disappeared"
-        ],
-        "hint": "Having the order number or business date helps find the exact records.",
-        "query_enrichment": {
-            "Order won't close/complete": "order stuck won't close complete finalize",
-            "Can't void or comp items": "void comp order item permission manager",
-            "Wrong total or tax": "order total tax wrong incorrect calculation",
-            "Missing items": "order items missing disappeared deleted",
-            "Order stuck or disappeared": "order missing stuck lost can't find search"
-        }
-    },
-    "menu": {
-        "question": "What's the menu issue?",
-        "options": [
-            "Item not showing on POS",
-            "Wrong price displaying",
-            "Modifier options missing",
-            "Item in wrong category",
-            "New item not syncing"
-        ],
-        "hint": "Knowing the exact item name helps find its configuration.",
-        "query_enrichment": {
-            "Item not showing on POS": "menu item not showing missing button hidden",
-            "Wrong price displaying": "menu price wrong incorrect amount",
-            "Modifier options missing": "modifier topping option missing unavailable",
-            "Item in wrong category": "menu item group category wrong location",
-            "New item not syncing": "menu sync new item not appearing update"
-        }
-    },
-    "cash": {
-        "question": "What's the cash drawer issue?",
-        "options": [
-            "Drawer over or short",
-            "Can't reconcile/close drawer",
-            "Wrong employee assigned",
-            "Drop not recorded",
-            "Multiple employees on same drawer"
-        ],
-        "hint": "The drawer name (like 'Drawer 1') and business date help find records.",
-        "query_enrichment": {
-            "Drawer over or short": "cash drawer over short variance count",
-            "Can't reconcile/close drawer": "cash drawer close reconcile stuck end day",
-            "Wrong employee assigned": "cash drawer employee assignment wrong",
-            "Drop not recorded": "cash drop safe missing not recorded",
-            "Multiple employees on same drawer": "cash drawer shared multiple employees assignment"
-        }
-    },
-    "default": {
-        "question": "What category best describes your issue?",
-        "options": [
-            "Orders & checkout",
-            "Payments & credit cards",
-            "Printing & receipts",
-            "Employees & time clock",
-            "Menu & items",
-            "Cash drawers",
-            "Delivery",
-            "Something else"
-        ],
-        "hint": "Pick the closest match and I'll ask a more specific question.",
-        "query_enrichment": {
-            "Orders & checkout": "order",
-            "Payments & credit cards": "payment credit card",
-            "Printing & receipts": "printer receipt",
-            "Employees & time clock": "employee time clock",
-            "Menu & items": "menu item",
-            "Cash drawers": "cash drawer",
-            "Delivery": "delivery driver dispatch",
-            "Something else": ""
-        }
-    }
-}
 
 # ================================================
 # Page Configuration
@@ -372,19 +222,9 @@ if "authenticated" not in st.session_state:
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Follow-up question session state
-if "followup_active" not in st.session_state:
-    st.session_state.followup_active = False
-if "original_query" not in st.session_state:
-    st.session_state.original_query = ""
-if "followup_count" not in st.session_state:
-    st.session_state.followup_count = 0
-if "enriched_context" not in st.session_state:
-    st.session_state.enriched_context = []
-if "pending_followup" not in st.session_state:
-    st.session_state.pending_followup = None
-if "cached_matches" not in st.session_state:
-    st.session_state.cached_matches = []
+if "last_processed_prompt" not in st.session_state:
+    st.session_state.last_processed_prompt = None
+
 
 # ================================================
 # Authentication
@@ -652,97 +492,6 @@ def get_relevance_class(distance, cross_encoder_score=None):
         return "weak", f"Weak ({similarity_pct}%)", similarity_pct
 
 # ================================================
-# Follow-up Question Functions
-# ================================================
-
-def detect_category(query: str) -> str:
-    """
-    Detect the most likely category from the query using keyword matching.
-
-    Args:
-        query: User's search query
-
-    Returns:
-        Category key (printer, payment, etc.) or "default" if no clear match
-    """
-    query_lower = query.lower()
-    category_scores = {}
-
-    for category, keywords in CATEGORY_KEYWORDS.items():
-        score = sum(1 for keyword in keywords if keyword in query_lower)
-        if score > 0:
-            category_scores[category] = score
-
-    if not category_scores:
-        return "default"
-
-    return max(category_scores, key=category_scores.get)
-
-
-def should_trigger_followup(matches: list) -> bool:
-    """
-    Check if search results have low enough confidence to trigger follow-up questions.
-
-    Args:
-        matches: List of search results with 'distance' field
-
-    Returns:
-        True if follow-up should be triggered
-    """
-    if not matches:
-        return False
-
-    top_distance = matches[0].get('distance')
-    if top_distance is None:
-        return False
-
-    return top_distance > FOLLOWUP_THRESHOLD
-
-
-def build_enriched_query(original: str, enrichments: list) -> str:
-    """
-    Combine original query with enrichment terms.
-
-    Args:
-        original: Original user query
-        enrichments: List of enrichment terms from follow-up selections
-
-    Returns:
-        Enriched query string
-    """
-    if not enrichments:
-        return original
-
-    enrichment_str = " ".join(enrichments)
-    return f"{original} {enrichment_str}"
-
-
-def reset_followup_state():
-    """Reset all follow-up related session state variables."""
-    st.session_state.followup_active = False
-    st.session_state.original_query = ""
-    st.session_state.followup_count = 0
-    st.session_state.enriched_context = []
-    st.session_state.pending_followup = None
-    st.session_state.cached_matches = []
-
-
-def get_followup_data(category: str) -> dict:
-    """
-    Get the follow-up question and options for a category.
-
-    Args:
-        category: Category key or "default"
-
-    Returns:
-        Dict with 'question', 'options', 'hint', 'query_enrichment' keys
-    """
-    if category not in FOLLOWUP_QUESTIONS:
-        return FOLLOWUP_QUESTIONS["default"]
-    return FOLLOWUP_QUESTIONS[category]
-
-
-# ================================================
 # Main Application
 # ================================================
 
@@ -834,126 +583,9 @@ def main():
         })
         return response
 
-    # Helper function to display follow-up question
-    def display_followup_question(category, matches):
-        """Display a follow-up question with options."""
-        followup_data = get_followup_data(category)
-        top_similarity = round((1 - matches[0]['distance']) * 100, 1) if matches else 0
-
-        st.info(f"I found some results ({top_similarity}% match), but let me ask a quick question to find something more specific:")
-
-        st.markdown(f"**{followup_data['question']}**")
-
-        # Radio buttons for options
-        selected = st.radio(
-            "Select an option:",
-            options=followup_data["options"],
-            key=f"followup_{st.session_state.followup_count}",
-            label_visibility="collapsed"
-        )
-
-        st.caption(f"Tip: {followup_data['hint']}")
-
-        # Action buttons
-        col1, col2 = st.columns([3, 1])
-        with col1:
-            if st.button("Search with this selection", key=f"search_btn_{st.session_state.followup_count}", use_container_width=True):
-                return selected, "search"
-        with col2:
-            if st.button("Skip", key=f"skip_btn_{st.session_state.followup_count}", use_container_width=True):
-                return None, "skip"
-
-        return selected, "waiting"
-
-    # Check if we have a pending follow-up to process
-    if st.session_state.pending_followup is not None:
-        category = st.session_state.pending_followup
-        matches = st.session_state.cached_matches
-
-        with st.chat_message("assistant"):
-            selected, action = display_followup_question(category, matches)
-
-            if action == "search" and selected:
-                # Get enrichment for selection
-                followup_data = get_followup_data(category)
-                enrichment = followup_data["query_enrichment"].get(selected, "")
-
-                # Persist follow-up Q&A to chat history
-                st.session_state.messages.append({
-                    "role": "assistant",
-                    "content": f"**{followup_data['question']}**\n\nTip: {followup_data['hint']}"
-                })
-                st.session_state.messages.append({
-                    "role": "user",
-                    "content": selected
-                })
-
-                # Check if this is a category redirect (from default question)
-                if category == "default" and enrichment in FOLLOWUP_QUESTIONS and enrichment != "default":
-                    # User selected a category, show that category's question
-                    st.session_state.pending_followup = enrichment
-                    st.session_state.followup_count += 1
-                    st.rerun()
-                elif enrichment:
-                    # Add enrichment and re-search
-                    st.session_state.enriched_context.append(enrichment)
-                    enriched_query = build_enriched_query(
-                        st.session_state.original_query,
-                        st.session_state.enriched_context
-                    )
-
-                    with st.spinner("Searching with more context..."):
-                        new_matches = search_knowledge_base(enriched_query, collection)
-
-                    st.session_state.followup_count += 1
-
-                    # Check if results improved or max follow-ups reached
-                    if not should_trigger_followup(new_matches) or st.session_state.followup_count >= MAX_FOLLOWUPS:
-                        # Good enough or max reached - show results
-                        reset_followup_state()
-                        if new_matches:
-                            display_results(new_matches, enriched_query, openai_client)
-                        else:
-                            st.warning("I couldn't find any relevant results. Try rephrasing your question.")
-                            st.session_state.messages.append({"role": "assistant", "content": "No results found.", "sources": []})
-                        st.rerun()
-                    else:
-                        # Still low confidence, ask another question
-                        st.session_state.cached_matches = new_matches
-                        new_category = detect_category(enriched_query)
-                        st.session_state.pending_followup = new_category
-                        st.rerun()
-                else:
-                    # Empty enrichment (e.g., "Something else") - just show current results
-                    reset_followup_state()
-                    if matches:
-                        display_results(matches, st.session_state.original_query, openai_client)
-                    st.rerun()
-
-            elif action == "skip":
-                # User wants to skip - show results with current matches
-                # Persist skip action to chat history
-                followup_data = get_followup_data(category)
-                st.session_state.messages.append({
-                    "role": "assistant",
-                    "content": f"**{followup_data['question']}**\n\nTip: {followup_data['hint']}"
-                })
-                st.session_state.messages.append({
-                    "role": "user",
-                    "content": "[Skipped - showing available results]"
-                })
-
-                original_query = st.session_state.original_query
-                reset_followup_state()
-                if matches:
-                    display_results(matches, original_query, openai_client)
-                else:
-                    st.warning("I couldn't find any relevant results.")
-                    st.session_state.messages.append({"role": "assistant", "content": "No results found.", "sources": []})
-                st.rerun()
-
-    elif prompt:
+    if prompt and prompt != st.session_state.last_processed_prompt:
         # New query from user
+        st.session_state.last_processed_prompt = prompt
         # Add user message to history and display
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
@@ -968,27 +600,8 @@ def main():
                 response = "I couldn't find any relevant results. Try rephrasing your question or use different keywords."
                 st.warning(response)
                 st.session_state.messages.append({"role": "assistant", "content": response, "sources": []})
-            elif should_trigger_followup(matches) and st.session_state.followup_count < MAX_FOLLOWUPS:
-                # Low confidence - initiate follow-up flow
-                st.session_state.followup_active = True
-                st.session_state.original_query = prompt
-                st.session_state.cached_matches = matches
-                st.session_state.followup_count = 1
-
-                # Detect category
-                category = detect_category(prompt)
-                st.session_state.pending_followup = category
-
-                # Display follow-up question
-                selected, action = display_followup_question(category, matches)
-
-                if action == "skip":
-                    # User clicked skip immediately
-                    reset_followup_state()
-                    display_results(matches, prompt, openai_client)
-                    st.rerun()
             else:
-                # High confidence - show results directly
+                # Show results directly
                 display_results(matches, prompt, openai_client)
 
         st.rerun()
@@ -1006,7 +619,7 @@ def main():
         # Clear chat
         if st.button("🗑️ Clear Chat", use_container_width=True):
             st.session_state.messages = []
-            reset_followup_state()
+            # Keep last_processed_prompt so quick search pills don't re-trigger
             st.rerun()
 
         st.divider()
@@ -1026,7 +639,6 @@ def main():
         if st.button("🚪 Logout", use_container_width=True):
             st.session_state.authenticated = False
             st.session_state.messages = []
-            reset_followup_state()
             st.rerun()
 
 # ================================================
